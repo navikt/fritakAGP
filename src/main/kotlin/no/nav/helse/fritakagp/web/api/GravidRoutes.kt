@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.hag.utils.bakgrunnsjobb.BakgrunnsjobbService
 import no.nav.helse.fritakagp.GravidKravMetrics
 import no.nav.helse.fritakagp.GravidSoeknadMetrics
+import no.nav.helse.fritakagp.auth.AuthClient
 import no.nav.helse.fritakagp.db.GravidKravRepository
 import no.nav.helse.fritakagp.db.GravidSoeknadRepository
 import no.nav.helse.fritakagp.domain.BeloepBeregning
@@ -40,7 +41,7 @@ import no.nav.helse.fritakagp.web.api.resreq.validation.extractFilExtDel
 import no.nav.helse.fritakagp.web.auth.authorize
 import no.nav.helse.fritakagp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helsearbeidsgiver.aareg.AaregClient
-import no.nav.helsearbeidsgiver.altinn.AltinnClient
+import no.nav.helsearbeidsgiver.altinn.Altinn3OBOClient
 import no.nav.helsearbeidsgiver.arbeidsgivernotifikasjon.ArbeidsgiverNotifikasjonKlient
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
@@ -55,11 +56,13 @@ fun Route.gravidRoutes(
     om: ObjectMapper,
     virusScanner: VirusScanner,
     bucket: BucketStorage,
-    authorizer: AltinnClient,
+    authorizer: Altinn3OBOClient,
     belopBeregning: BeloepBeregning,
     aaregClient: AaregClient,
     pdlService: PdlService,
-    arbeidsgiverNotifikasjonKlient: ArbeidsgiverNotifikasjonKlient
+    arbeidsgiverNotifikasjonKlient: ArbeidsgiverNotifikasjonKlient,
+    authClient: AuthClient,
+    fagerScope: String
 ) {
     route("/gravid") {
         route("/soeknad") {
@@ -116,7 +119,7 @@ fun Route.gravidRoutes(
                     call.respond(HttpStatusCode.NotFound)
                 } else {
                     if (form.identitetsnummer != innloggetFnr) {
-                        authorize(authorizer, form.virksomhetsnummer)
+                        authorize(authorizer, authClient, fagerScope, form.virksomhetsnummer)
                     }
                     form.sendtAvNavn = form.sendtAvNavn ?: pdlService.hentNavn(innloggetFnr)
                     form.navn = form.navn ?: pdlService.hentNavn(form.identitetsnummer)
@@ -127,7 +130,7 @@ fun Route.gravidRoutes(
 
             post {
                 val request = call.receive<GravidKravRequest>()
-                authorize(authorizer, request.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, request.virksomhetsnummer)
                 val arbeidsforhold = aaregClient
                     .hentArbeidsforhold(request.identitetsnummer, UUID.randomUUID().toString())
                     .filter { it.arbeidsgiver.organisasjonsnummer == request.virksomhetsnummer }
@@ -162,7 +165,7 @@ fun Route.gravidRoutes(
             patch("/{id}") {
                 val request = call.receive<GravidKravRequest>()
 
-                authorize(authorizer, request.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, request.virksomhetsnummer)
 
                 val innloggetFnr = hentIdentitetsnummerFraLoginToken(call.request)
                 val sendtAvNavn = pdlService.hentNavn(innloggetFnr)
@@ -226,7 +229,7 @@ fun Route.gravidRoutes(
                 val form = gravidKravRepo.getById(kravId)
                     ?: return@delete call.respond(HttpStatusCode.NotFound)
 
-                authorize(authorizer, form.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, form.virksomhetsnummer)
 
                 form.arbeidsgiverSakId?.let {
                     runBlocking { arbeidsgiverNotifikasjonKlient.hardDeleteSak(it) }

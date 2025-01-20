@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.hag.utils.bakgrunnsjobb.BakgrunnsjobbService
 import no.nav.helse.fritakagp.KroniskKravMetrics
 import no.nav.helse.fritakagp.KroniskSoeknadMetrics
+import no.nav.helse.fritakagp.auth.AuthClient
 import no.nav.helse.fritakagp.db.KroniskKravRepository
 import no.nav.helse.fritakagp.db.KroniskSoeknadRepository
 import no.nav.helse.fritakagp.domain.BeloepBeregning
@@ -36,7 +37,7 @@ import no.nav.helse.fritakagp.web.api.resreq.KroniskSoknadRequest
 import no.nav.helse.fritakagp.web.auth.authorize
 import no.nav.helse.fritakagp.web.auth.hentIdentitetsnummerFraLoginToken
 import no.nav.helsearbeidsgiver.aareg.AaregClient
-import no.nav.helsearbeidsgiver.altinn.AltinnClient
+import no.nav.helsearbeidsgiver.altinn.Altinn3OBOClient
 import no.nav.helsearbeidsgiver.arbeidsgivernotifikasjon.ArbeidsgiverNotifikasjonKlient
 import no.nav.helsearbeidsgiver.utils.log.logger
 import java.time.LocalDateTime
@@ -50,11 +51,13 @@ fun Route.kroniskRoutes(
     om: ObjectMapper,
     virusScanner: VirusScanner,
     bucket: BucketStorage,
-    authorizer: AltinnClient,
+    authorizer: Altinn3OBOClient,
     belopBeregning: BeloepBeregning,
     aaregClient: AaregClient,
     pdlService: PdlService,
-    arbeidsgiverNotifikasjonKlient: ArbeidsgiverNotifikasjonKlient
+    arbeidsgiverNotifikasjonKlient: ArbeidsgiverNotifikasjonKlient,
+    authClient: AuthClient,
+    fagerScope: String
 ) {
     val logger = "kroniskRoutes".logger()
 
@@ -132,7 +135,7 @@ fun Route.kroniskRoutes(
                     call.respond(HttpStatusCode.NotFound)
                 } else {
                     if (form.identitetsnummer != innloggetFnr) {
-                        authorize(authorizer, form.virksomhetsnummer)
+                        authorize(authorizer, authClient, fagerScope, form.virksomhetsnummer)
                     }
 
                     logger.info("KKG: Hent personinfo fra pdl.")
@@ -147,7 +150,7 @@ fun Route.kroniskRoutes(
                 logger.info("KKPo: Send inn kronisk krav.")
 
                 val request = call.receive<KroniskKravRequest>()
-                authorize(authorizer, request.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, request.virksomhetsnummer)
 
                 logger.info("KKPo: Hent arbeidsforhold fra aareg.")
                 val arbeidsforhold = aaregClient
@@ -191,7 +194,7 @@ fun Route.kroniskRoutes(
 
                 val request = call.receive<KroniskKravRequest>()
 
-                authorize(authorizer, request.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, request.virksomhetsnummer)
 
                 val innloggetFnr = hentIdentitetsnummerFraLoginToken(call.request)
                 val sendtAvNavn = pdlService.hentNavn(innloggetFnr)
@@ -264,7 +267,7 @@ fun Route.kroniskRoutes(
                 val form = kroniskKravRepo.getById(kravId)
                     ?: return@delete call.respond(HttpStatusCode.NotFound)
 
-                authorize(authorizer, form.virksomhetsnummer)
+                authorize(authorizer, authClient, fagerScope, form.virksomhetsnummer)
 
                 logger.info("KKD: Slett sak i arbeidsgivernotifikasjon.")
                 form.arbeidsgiverSakId?.let {

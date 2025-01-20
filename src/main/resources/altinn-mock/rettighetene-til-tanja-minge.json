@@ -1,0 +1,255 @@
+{
+  "isError": false,
+  "hierarki": [
+    {
+      "orgnr": "810007672",
+      "altinn3Tilganger": [
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
+      ],
+      "altinn2Tilganger": [
+        "5810:1",
+        "5934:1",
+        "3403:1",
+        "2896:87",
+        "5516:2",
+        "5332:1",
+        "5384:1",
+        "5078:1",
+        "4826:1",
+        "4936:1",
+        "5902:1",
+        "5278:1",
+        "5516:3",
+        "5441:1",
+        "5516:1",
+        "5516:5",
+        "5516:4"
+      ],
+      "underenheter": [],
+      "navn": "ANSTENDIG BJØRN KOMMUNE",
+      "organisasjonsform": "KOMM"
+    },
+    {
+      "orgnr": "810007702",
+      "altinn3Tilganger": [],
+      "altinn2Tilganger": [
+        "5934:1",
+        "3403:1",
+        "2896:87",
+        "5332:1",
+        "5384:1",
+        "5078:1",
+        "4826:1",
+        "4936:1",
+        "5902:1"
+      ],
+      "underenheter": [
+        {
+          "orgnr": "810007842",
+          "altinn3Tilganger": [],
+          "altinn2Tilganger": [
+            "5934:1",
+            "3403:1",
+            "2896:87",
+            "5332:1",
+            "5384:1",
+            "5078:1",
+            "4826:1",
+            "4936:1",
+            "5902:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN BARNEHAGE",
+          "organisasjonsform": "BEDR"
+        },
+        {
+          "orgnr": "810007982",
+          "altinn3Tilganger": [],
+          "altinn2Tilganger": [
+            "5934:1",
+            "3403:1",
+            "2896:87",
+            "5332:1",
+            "5384:1",
+            "5078:1",
+            "4826:1",
+            "4936:1",
+            "5902:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN SYKEHJEM",
+          "organisasjonsform": "BEDR"
+        },
+        {
+          "orgnr": "810008032",
+          "altinn3Tilganger": [],
+          "altinn2Tilganger": [
+            "5934:1",
+            "3403:1",
+            "2896:87",
+            "5332:1",
+            "5384:1",
+            "5078:1",
+            "4826:1",
+            "4936:1",
+            "5902:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN BRANNVESEN",
+          "organisasjonsform": "BEDR"
+        },
+        {
+          "orgnr": "917404437",
+          "altinn3Tilganger": [],
+          "altinn2Tilganger": [
+            "4936:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN RAKEBYRÅ",
+          "organisasjonsform": "BEDR"
+        }
+      ],
+      "navn": "ANSTENDIG PIGGSVIN BYDEL",
+      "organisasjonsform": "ORGL"
+    },
+    {
+      "orgnr": "911212218",
+      "altinn3Tilganger": [
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
+      ],
+      "altinn2Tilganger": [
+        "5810:1",
+        "5934:1",
+        "3403:1",
+        "2896:87",
+        "5516:2",
+        "5332:1",
+        "5384:1",
+        "5078:1",
+        "4826:1",
+        "4936:1",
+        "5902:1",
+        "5278:1",
+        "5516:3",
+        "5441:1",
+        "5516:1",
+        "5516:5",
+        "5516:4"
+      ],
+      "underenheter": [],
+      "navn": "SKJERSTAD OG KJØRSVIKBUGEN",
+      "organisasjonsform": "AS"
+    },
+    {
+      "orgnr": "911206722",
+      "altinn3Tilganger": [
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
+      ],
+      "altinn2Tilganger": [
+        "5810:1",
+        "5934:1",
+        "3403:1",
+        "2896:87",
+        "5516:2",
+        "5332:1",
+        "5384:1",
+        "5078:1",
+        "4826:1",
+        "4936:1",
+        "5902:1",
+        "5278:1",
+        "5516:3",
+        "5441:1",
+        "5516:1",
+        "5516:5",
+        "5516:4"
+      ],
+      "underenheter": [],
+      "navn": "SKOPPUM OG SANDØY",
+      "organisasjonsform": "BEDR"
+    }
+  ],
+  "orgNrTilTilganger": {
+    "810007842": [
+      "5934:1",
+      "3403:1",
+      "2896:87",
+      "5332:1",
+      "5384:1",
+      "5078:1",
+      "4826:1",
+      "4936:1",
+      "5902:1"
+    ],
+    "810007982": [
+      "5934:1",
+      "3403:1",
+      "2896:87",
+      "5332:1",
+      "5384:1",
+      "5078:1",
+      "4826:1",
+      "4936:1",
+      "5902:1"
+    ],
+    "810008032": [
+      "5934:1",
+      "3403:1",
+      "2896:87",
+      "5332:1",
+      "5384:1",
+      "5078:1",
+      "4826:1",
+      "4936:1",
+      "5902:1"
+    ]
+  },
+  "tilgangTilOrgNr": {
+    "5934:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "3403:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "2896:87": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "5332:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "5384:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "5078:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "4826:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ],
+    "4936:1": [
+      "810007842",
+      "810007982",
+      "810008032",
+      "917404437"
+    ],
+    "5902:1": [
+      "810007842",
+      "810007982",
+      "810008032"
+    ]
+  }
+}

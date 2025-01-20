@@ -47,9 +47,9 @@ fun Application.fritakModule(env: Env) {
         route("${env.ktorBasepath}/api/v1") {
             authenticate("idporten-issuer", "tokenx-issuer") {
                 systemRoutes()
-                kroniskRoutes(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
-                gravidRoutes(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
-                altinnRoutes(get())
+                kroniskRoutes(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), env.altinnTilgangerScope)
+                gravidRoutes(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), env.altinnTilgangerScope)
+                altinnRoutes(get(), get(), get(), env.altinnTilgangerScope)
             }
         }
         swaggerRoutes(env.ktorBasepath)

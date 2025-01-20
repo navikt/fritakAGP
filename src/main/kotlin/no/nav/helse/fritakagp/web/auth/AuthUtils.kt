@@ -4,16 +4,19 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.request.ApplicationRequest
 import io.ktor.util.pipeline.PipelineContext
+import no.nav.helse.fritakagp.auth.AuthClient
+import no.nav.helse.fritakagp.auth.fetchOboToken
 import no.nav.helse.fritakagp.integration.altinn.ManglerAltinnRettigheterException
-import no.nav.helse.fritakagp.integration.altinn.hasAccess
-import no.nav.helsearbeidsgiver.altinn.AltinnClient
+import no.nav.helsearbeidsgiver.altinn.Altinn3OBOClient
 import no.nav.security.token.support.core.jwt.JwtToken
 import java.time.Instant
 import java.util.Date
 
-fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: AltinnClient, arbeidsgiverId: String) {
-    val identitetsnummer = hentIdentitetsnummerFraLoginToken(call.request)
-    if (!authorizer.hasAccess(identitetsnummer, arbeidsgiverId)) {
+suspend fun PipelineContext<Unit, ApplicationCall>.authorize(authorizer: Altinn3OBOClient, authClient: AuthClient, scope: String, orgnr: String) {
+    val fnr = hentIdentitetsnummerFraLoginToken(call.request)
+    val userTokenString = getTokenString(call.request)
+    val getToken = authClient.fetchOboToken(scope, userTokenString)
+    if (!authorizer.harTilgangTilOrganisasjon(fnr, orgnr, getToken)) {
         throw ManglerAltinnRettigheterException()
     }
 }
@@ -29,7 +32,7 @@ fun hentUtløpsdatoFraLoginToken(request: ApplicationRequest): Date {
     return JwtToken(tokenString).jwtTokenClaims.expirationTime ?: Date.from(Instant.MIN)
 }
 
-private fun getTokenString(request: ApplicationRequest): String {
+fun getTokenString(request: ApplicationRequest): String {
     return request.headers["Authorization"]?.replaceFirst("Bearer ", "")
         ?: throw IllegalAccessException("Du må angi et identitetstoken i Authorization-headeren")
 }

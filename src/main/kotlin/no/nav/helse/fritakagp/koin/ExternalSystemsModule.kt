@@ -16,6 +16,7 @@ import no.nav.helse.fritakagp.integration.kafka.brukernotifikasjonKafkaProps
 import no.nav.helse.fritakagp.integration.virusscan.ClamavVirusScannerImp
 import no.nav.helse.fritakagp.integration.virusscan.VirusScanner
 import no.nav.helsearbeidsgiver.aareg.AaregClient
+import no.nav.helsearbeidsgiver.altinn.Altinn3OBOClient
 import no.nav.helsearbeidsgiver.altinn.AltinnClient
 import no.nav.helsearbeidsgiver.altinn.CacheConfig
 import no.nav.helsearbeidsgiver.arbeidsgivernotifikasjon.ArbeidsgiverNotifikasjonKlient
@@ -38,6 +39,14 @@ fun Module.externalSystemClients(env: Env, envOauth2: EnvOauth2) {
             cacheConfig = CacheConfig(Duration.ofMinutes(60).toKotlinDuration(), 100)
         )
     } bind AltinnClient::class
+
+    single {
+        Altinn3OBOClient(
+            baseUrl = env.altinnTilgangerBaseUrl,
+            serviceCode = env.altinnServiceOwnerServiceId,
+            cacheConfig = CacheConfig(Duration.ofMinutes(60).toKotlinDuration(), 100)
+        )
+    } bind Altinn3OBOClient::class
 
     single { GrunnbeloepClient(env.grunnbeloepUrl, get()) }
 
@@ -87,5 +96,5 @@ fun Module.externalSystemClients(env: Env, envOauth2: EnvOauth2) {
         )
     } bind BrukernotifikasjonSender::class
 
-    single { AuthClient(env = env) }
+    single { AuthClient(tokenEndpoint = env.tokenEndpoint, tokenExchangeEndpoint = env.tokenExchangeEndpoint, tokenIntrospectionEndpoint = env.tokenIntrospectionEndpoint) }
 }

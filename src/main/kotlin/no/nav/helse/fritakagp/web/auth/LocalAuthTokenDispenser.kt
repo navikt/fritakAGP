@@ -19,15 +19,14 @@ fun Application.localAuthTokenDispenser(env: Env) {
 
     val server = MockOAuth2Server().apply { start(port = 6666) }
 
-    logger.info("Startet OAuth2-mock på ${server.jwksUrl(Issuers.IDPORTEN)}")
-
+    logger.info("Startet OAuth2-mock på ${server.jwksUrl(Issuers.TOKENX)}")
     routing {
         get("/local/token-please") {
             logger.warn("token-please skal kun kalles lokalt!")
             val token = server.issueToken(
                 subject = call.request.queryParameters["subject"].toString(),
-                issuerId = Issuers.IDPORTEN,
-                audience = env.idportenAcceptedAudience.firstOrNull()
+                issuerId = Issuers.TOKENX,
+                audience = env.tokenxAcceptedAudience
             )
             call.respondText(token.serialize(), ContentType.Text.Plain, HttpStatusCode.OK)
         }

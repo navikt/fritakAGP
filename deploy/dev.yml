@@ -7,6 +7,8 @@ accessOutbound:
   apps:
     - name: notifikasjon-produsent-api
       namespace: fager
+    - name: arbeidsgiver-altinn-tilganger
+      namespace: fager
   external:
     - kafka-schema-registry.nais-q.adeo.no
     - dokarkiv.dev-fss-pub.nais.io
@@ -71,7 +73,10 @@ env:
     value: altinn:serviceowner/reportees
   - name: ENHETSREGISTERET
     value: https://data.brreg.no/enhetsregisteret/api/underenheter
-
+  - name: ALTINN_TILGANGER_SCOPE
+    value: dev-gcp:fager:arbeidsgiver-altinn-tilganger
+  - name: ALTINN_TILGANGER_BASE_URL
+    value: http://arbeidsgiver-altinn-tilganger.fager
 maskinporten:
   consumes:
     - "altinn:serviceowner/reportees"

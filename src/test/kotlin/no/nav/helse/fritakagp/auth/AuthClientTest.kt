@@ -11,18 +11,21 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.serialization.jackson.jackson
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
-import no.nav.helse.fritakagp.Env
 import no.nav.helse.fritakagp.customObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class AuthClientTest {
-    private val env = mockk<Env>(relaxed = true).apply {
-        every { tokenEndpoint } returns "http://localhost:8080/token"
+
+    fun createAuthClient(): AuthClient {
+        val tokenEndpoint = "http://localhost:8080/token"
+        val tokenExchangeEndpoint = "http://localhost:8080/token-exchange"
+        val tokenIntrospectEndpoint = "http://localhost:8080/token-introspect"
+        val authClient = AuthClient(tokenEndpoint, tokenExchangeEndpoint, tokenIntrospectEndpoint)
+        return authClient
     }
 
     @Test
@@ -39,7 +42,7 @@ class AuthClientTest {
             }
             mockkStatic(::createHttpClient) {
                 every { createHttpClient() } returns httpclientMock(mockEngine)
-                val response = AuthClient(env).token(IdentityProvider.MASKINPORTEN, "test")
+                val response = createAuthClient().token(IdentityProvider.MASKINPORTEN, "test")
                 assertTrue(response is TokenResponse.Success)
                 assertEquals("token", (response as TokenResponse.Success).accessToken)
                 assertEquals(3600, response.expiresInSeconds)
@@ -62,7 +65,7 @@ class AuthClientTest {
             mockkStatic(::createHttpClient) {
                 every { createHttpClient() } returns httpclientMock(mockEngine)
 
-                val response = AuthClient(env).token(IdentityProvider.MASKINPORTEN, "test")
+                val response = createAuthClient().token(IdentityProvider.MASKINPORTEN, "test")
                 assertTrue(response is TokenResponse.Error)
                 assertEquals("invalid_request", (response as TokenResponse.Error).error.error)
                 assertEquals("Invalid request", response.error.errorDescription)

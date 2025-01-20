@@ -4,6 +4,11 @@ dbTier: db-custom-1-3840
 ingresses:
   - https://fritakagp-api.intern.nav.no
 accessOutbound:
+  apps:
+    - name: notifikasjon-produsent-api
+      namespace: fager
+    - name: arbeidsgiver-altinn-tilganger
+      namespace: fager
   external:
     - kafka-schema-registry.nais.adeo.no
     - dokarkiv.prod-fss-pub.nais.io
@@ -66,7 +71,10 @@ env:
     value: altinn:serviceowner/reportees
   - name: ENHETSREGISTERET
     value: https://data.brreg.no/enhetsregisteret/api/underenheter
-
+  - name: ALTINN_TILGANGER_SCOPE
+    value: prod-gcp:fager:arbeidsgiver-altinn-tilganger
+  - name: ALTINN_TILGANGER_BASE_URL
+    value: http://arbeidsgiver-altinn-tilganger.fager
 maskinporten:
   consumes:
     - "altinn:serviceowner/reportees"
